@@ -1,0 +1,54 @@
+name: dailygrocery
+description: "A new Flutter project."
+publish_to: "none"
+version: 0.1.0
+
+environment:
+  sdk: ">=3.2.6 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_secure_storage: ^5.0.3
+  http: ^1.2.0
+  fluttertoast: ^8.0.8
+  ionicons: ^0.2.2
+  carousel_slider: ^4.2.1
+  provider: ^6.1.1
+  foldable_list: ^1.0.1
+  flutter_localization: ^0.2.0
+  intl: ^0.18.1
+  geolocator: ^11.0.0
+  location: ^5.0.3
+  url_launcher: ^6.2.5
+  app_settings: ^5.1.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+  flutter_native_splash: ^1.2.0
+  google_maps_flutter: ^2.0.10
+  geocoding: ^2.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/cup1.jpg
+    - assets/images/cup2.jpg
+    - assets/images/splash.png
+    - assets/images/mapbg.jpg
+
+  fonts:
+    - family: Roboto
+      fonts:
+        - asset: fonts/Roboto-Regular.ttf
+
+    - family: TiroDevanagariMarathi
+      fonts:
+        - asset: fonts/TiroDevanagariMarathi-Regular.ttf
+
+    - family: NotoSansDevanagari
+      fonts:
+        - asset: fonts/NotoSansDevanagari-Regular.ttf

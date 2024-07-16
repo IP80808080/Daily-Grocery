@@ -1,0 +1,7 @@
+flutter_native_splash:
+  image: assets/images/splash.png
+  color: "#ffffff"
+  text: "Daily Grocery"
+  text_color: "#000"
+  android: true
+  ios: true

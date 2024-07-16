@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+{% block title %}All Orders{% endblock title %}
+{% block content %}
+<div class="container">
+<div class="accordion mt-4" id="accordionOrders">
+   <h5>New Orders</h5>
+   {% if delivery_orders %}
+      {% for order in delivery_orders %}
+         <div class="accordion-item">
+            <h2 class="accordion-header" id="{{order.id}}">
+               <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{order.id}}" aria-expanded="false" aria-controls="collapse{{order.id}}">
+                  <div class="row">
+                     <div class="col-sm-12 col-md-4 col-lg-4">
+                        Order from &nbsp; <b>{{order.user.email}} - {{order.user.get_full_name}}</b>
+                     </div>
+                     <div class="col-sm-12 col-md-5 col-lg-5">
+                        at {{order.created}}
+                     </div>
+                     <div class="col-sm-12 col-md-3 col-lg-3">
+                        {% if order.order_status == 'placed' %}
+                           <span class="badge bg-warning text-dark">{{order.get_order_status_display}}</span>
+                        {% elif order.order_status == 'assigned' %}
+                           <span class="badge bg-info text-dark">{{order.get_order_status_display}}</span>
+                     {% elif order.order_status == 'picked' %}
+                           <span class="badge bg-primary">{{order.get_order_status_display}}</span>
+                        {% elif order.order_status == 'delivered' %}
+                           <span class="badge bg-success">{{order.get_order_status_display}}</span>
+                        {% elif order.order_status == 'cancelled' %}
+                           <span class="badge bg-danger">{{order.get_order_status_display}}</span>
+                        {% endif %} 
+                     </div>
+                  </div>
+               
+               </button>
+            </h2>
+            <div id="collapse{{order.id}}" class="accordion-collapse collapse" aria-labelledby="{{order.id}}" data-bs-parent="#accordionOrders">
+               <div class="accordion-body">
+                  {% for grocery in order.order.all %}
+                     <div class="row">
+                        <div class="col-sm-12 col-md-3 col-lg-3">
+                        {{grocery.product_name}}
+                        </div>
+                        <div class="col-sm-12 col-md-3 col-lg-3">
+                        Price - {{grocery.price}}
+                        </div>
+                        <div class="col-sm-12 col-md-4 col-lg-3">
+                        Discount price - {% if grocery.discounted_price %} {{grocery.discounted_price}}{% else %}00.00{% endif %}
+                        </div>
+                        <div class="col-sm-12 col-md-3 col-lg-3">
+                           Weight- {{grocery.weight}}
+                        </div>
+                        <div class="col-sm-12 col-md-3 col-lg-3">
+                           Type- {{grocery.get_product_type_display}}
+                        </div>
+                        <div class="col-sm-12 col-md-3 col-lg-3">
+                           Qty- {{grocery.quantity}}
+                        </div> <div class="col-sm-12 col-md-3 col-lg-3">
+                        Total Value - Rs.{{grocery.total_price}}
+                        </div>
+                     </div>
+                     <hr>
+                  {% endfor %}
+                  <h4>Overview</h4>
+                  <div class="row">
+                     <div class="col-sm-12 col-md-3 col-lg-3">
+                        Order value - Rs.{{order.order_value}}
+                     </div>
+                     <div class="col-sm-12 col-md-3 col-lg-3">
+                        Item Count- {{order.order_count}}
+                     </div>
+                     <div class="col-sm-12 col-md-3 col-lg-3">
+                        Charges- {{order.order_charges}}
+                     </div>
+                     <div class="col-sm-12 col-md-3 col-lg-3">
+                        Total Discount- {{order.order_discount}}
+                     </div>
+                     <div class="col-sm-12 col-md-3 col-lg-3">
+                        Address- <a href="https://www.google.com/maps/search/{{ order.latitude }}, {{order.longitude}}" target="_blank">{{ order.address_text }}</a>
+                     </div>
+                     <div class="col-sm-12 col-md-3 col-lg-3">
+                        {% if order.order_status == 'placed' %}
+                           <a class="btn btn-primary" href="{% url "orderManagement:update_order" order.id 'assigned' %}">Accept</a>
+                        {% elif order.order_status == 'assigned' %}
+                           <a class="btn btn-primary" href="{% url "orderManagement:update_order" order.id 'picked' %}">Pick</a>
+                     {% elif order.order_status == 'picked' %}
+                           <a class="btn btn-primary" href="{% url "orderManagement:update_order" order.id 'delivered' %}">Delivered</a>
+                        {% endif %} 
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      {% endfor %}
+   {% else %}No New Orders yet{% endif %}
+   <hr>
+   <h5>Ongoing Orders</h5>
+   {% for order in accepted_order %}
+      <div class="accordion-item">
+      <h2 class="accordion-header" id="{{order.id}}">
+         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{order.id}}" aria-expanded="false" aria-controls="collapse{{order.id}}">
+            <div class="row">
+               <div class="col-sm-12 col-md-4 col-lg-4">
+                  <span class="badge bg-success">{{order.id}}</span>&nbsp; Order from &nbsp; <b>{{order.user.email}} - {{order.user.get_full_name}}</b>
+               </div>
+               <div class="col-sm-12 col-md-5 col-lg-5">
+                  at {{order.created}}
+               </div>
+               <div class="col-sm-12 col-md-3 col-lg-3">
+                  {% if order.order_status == 'assigned' %}
+                     <span class="badge bg-info text-dark">{{order.get_order_status_display}}</span>
+                 {% elif order.order_status == 'picked' %}
+                     <span class="badge bg-primary">{{order.get_order_status_display}}</span>
+                  {% elif order.order_status == 'delivered' %}
+                     <span class="badge bg-success">{{order.get_order_status_display}}</span>
+                  {% elif order.order_status == 'cancelled' %}
+                     <span class="badge bg-danger">{{order.get_order_status_display}}</span>
+                  {% endif %} 
+               </div>
+            </div>
+          
+         </button>
+      </h2>
+      <div id="collapse{{order.id}}" class="accordion-collapse collapse" aria-labelledby="{{order.id}}" data-bs-parent="#accordionOrders">
+         <div class="accordion-body">
+            {% for grocery in order.order.all %}
+               <div class="row">
+                  <div class="col-sm-12 col-md-3 col-lg-3">
+                  {{grocery.product_name}}
+                  </div>
+                  <div class="col-sm-12 col-md-3 col-lg-3">
+                  Price - {{grocery.price}}
+                  </div>
+                  <div class="col-sm-12 col-md-4 col-lg-3">
+                  Discount price - {% if grocery.discounted_price %} {{grocery.discounted_price}}{% else %}00.00{% endif %}
+                  </div>
+                  <div class="col-sm-12 col-md-3 col-lg-3">
+                     Weight- {{grocery.weight}}
+                  </div>
+                  <div class="col-sm-12 col-md-3 col-lg-3">
+                     Type- {{grocery.get_product_type_display}}
+                  </div>
+                  <div class="col-sm-12 col-md-3 col-lg-3">
+                     Qty- {{grocery.quantity}}
+                  </div> <div class="col-sm-12 col-md-3 col-lg-3">
+                  Total Value - Rs.{{grocery.total_price}}
+                  </div>
+               </div>
+               <hr>
+             {% endfor %}
+             <h4>Overview</h4>
+             <div class="row">
+               <div class="col-sm-12 col-md-3 col-lg-3">
+                  Order value - Rs.{{order.order_value}}
+               </div>
+               <div class="col-sm-12 col-md-3 col-lg-3">
+                  Item Count- {{order.order_count}}
+               </div>
+               <div class="col-sm-12 col-md-3 col-lg-3">
+                  Charges- {{order.order_charges}}
+               </div>
+               <div class="col-sm-12 col-md-3 col-lg-3">
+                  Total Discount- {{order.order_discount}}
+               </div>
+               <div class="col-sm-12 col-md-3 col-lg-3">
+                  Address- <a href="https://www.google.com/maps/search/{{ order.latitude }}, {{order.longitude}}" target="_blank">{{ order.address_text }}</a>
+               </div>
+               <div class="col-sm-12 col-md-3 col-lg-3">
+                  Delivery Person- {{order.assigned_user.get_full_name}}
+               </div>
+               <div class="col-sm-12 col-md-3 col-lg-3">
+                  {% if order.order_status == 'assigned' %}
+                     <a class="btn btn-primary" href="{% url "orderManagement:update_order" order.id 'picked' %}">Pick</a>
+                 {% elif order.order_status == 'picked' %}
+                     <a class="btn btn-primary" href="{% url "orderManagement:update_order" order.id 'delivered' %}">Delivered</a>
+                  {% endif %}
+                  {% if order.order_status == 'assigned' or order.order_status == 'picked' or order.order_status == 'placed' %}
+                  <a class="btn btn-primary" href="{% url "orderManagement:update_order" order.id 'cancelled' %}">Cancelled</a>
+                  {% endif %}
+               </div>
+             </div>
+         </div>
+      </div>
+</div>
+   {% endfor %}
+ </div>
+</div>
+{% endblock content %}
